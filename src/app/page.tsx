@@ -1,7 +1,9 @@
 import { Header } from "@/components/header";
 import { TripBrowser } from "@/components/trip-browser";
+import { getUpcomingTrips } from "@/lib/trips";
 
-export default function Home() {
+export default async function Home() {
+  const trips = await getUpcomingTrips();
   return (
     <div className="min-h-screen bg-stone-50">
       <Header />
@@ -18,7 +20,7 @@ export default function Home() {
           </p>
         </section>
 
-        <TripBrowser />
+        <TripBrowser trips={trips} />
       </main>
     </div>
   );

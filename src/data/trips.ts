@@ -4,6 +4,7 @@ export type Driver = {
   name: string;
   initials: string;
   photo: string;
+  avatarUrl?: string;
   bio: string;
   languages: string[];
 };

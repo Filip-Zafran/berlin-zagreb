@@ -2,9 +2,9 @@
 
 import { useMemo, useState } from "react";
 import { RouteColumn } from "@/components/route-column";
-import { trips } from "@/data/trips";
+import type { Trip } from "@/data/trips";
 
-export function TripBrowser() {
+export function TripBrowser({ trips }: { trips: Trip[] }) {
   const [selectedDate, setSelectedDate] = useState("");
   const today = new Date();
   const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
@@ -14,7 +14,7 @@ export function TripBrowser() {
         .filter((trip) => trip.departure.slice(0, 10) >= todayKey)
         .filter((trip) => !selectedDate || trip.departure.slice(0, 10) === selectedDate)
         .sort((a, b) => new Date(a.departure).getTime() - new Date(b.departure).getTime()),
-    [selectedDate, todayKey],
+    [selectedDate, todayKey, trips],
   );
 
   return (

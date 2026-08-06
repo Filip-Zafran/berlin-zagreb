@@ -6,8 +6,8 @@ const timeFormatter = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute
 
 export function DriverAvatar({ trip, size = "small" }: { trip: Trip; size?: "small" | "large" }) {
   return (
-    <span role="img" aria-label={`${trip.driver.name} profile photo`} className={`grid shrink-0 place-items-center rounded-full bg-gradient-to-br font-bold text-white shadow-sm ring-2 ring-white ${trip.driver.photo} ${size === "large" ? "size-20 text-xl" : "size-10 text-xs"}`}>
-      {trip.driver.initials}
+    <span role="img" aria-label={`${trip.driver.name} profile photo`} style={trip.driver.avatarUrl ? { backgroundImage: `url(${trip.driver.avatarUrl})` } : undefined} className={`grid shrink-0 place-items-center rounded-full bg-gradient-to-br bg-cover bg-center font-bold text-white shadow-sm ring-2 ring-white ${trip.driver.photo} ${size === "large" ? "size-20 text-xl" : "size-10 text-xs"}`}>
+      {!trip.driver.avatarUrl && trip.driver.initials}
     </span>
   );
 }

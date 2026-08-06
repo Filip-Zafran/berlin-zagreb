@@ -3,7 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/header";
 import { DriverAvatar } from "@/components/trip-card";
-import { getTrip, trips } from "@/data/trips";
+import { trips } from "@/data/trips";
+import { getPublishedTrip } from "@/lib/trips";
 
 type TripPageProps = { params: Promise<{ id: string }> };
 
@@ -15,12 +16,12 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: TripPageProps): Promise<Metadata> {
-  const trip = getTrip((await params).id);
+  const trip = await getPublishedTrip((await params).id);
   return trip ? { title: `${trip.startCity} to ${trip.destinationCity} with ${trip.driver.name} — Via` } : {};
 }
 
 export default async function TripPage({ params }: TripPageProps) {
-  const trip = getTrip((await params).id);
+  const trip = await getPublishedTrip((await params).id);
   if (!trip) notFound();
 
   const departure = new Date(trip.departure);
