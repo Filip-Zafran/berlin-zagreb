@@ -1,4 +1,16 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Via — Berlin & Zagreb rides
+
+A lightweight ride-sharing MVP for drivers and passengers travelling between Berlin and Zagreb.
+
+## Local setup
+
+1. Install dependencies with `npm install`.
+2. Copy `.env.example` to `.env.local` and add the URL and public anonymous key from your Supabase project.
+3. Run `supabase/migrations/202608060001_initial_schema.sql` in the Supabase SQL editor.
+4. Add `http://localhost:3000/auth/callback` to the allowed redirect URLs in Supabase Authentication.
+5. Start the app with `npm run dev`.
+
+The public trip demo works without Supabase credentials. Authentication and protected pages require a configured Supabase project.
 
 ## Getting Started
 

@@ -6,12 +6,15 @@ import { trips } from "@/data/trips";
 
 export function TripBrowser() {
   const [selectedDate, setSelectedDate] = useState("");
+  const today = new Date();
+  const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
   const filteredTrips = useMemo(
     () =>
       trips
+        .filter((trip) => trip.departure.slice(0, 10) >= todayKey)
         .filter((trip) => !selectedDate || trip.departure.slice(0, 10) === selectedDate)
         .sort((a, b) => new Date(a.departure).getTime() - new Date(b.departure).getTime()),
-    [selectedDate],
+    [selectedDate, todayKey],
   );
 
   return (
@@ -27,7 +30,7 @@ export function TripBrowser() {
             id="departure-date"
             type="date"
             value={selectedDate}
-            min="2026-08-06"
+            min={todayKey}
             onChange={(event) => setSelectedDate(event.target.value)}
             className="focus-ring min-h-11 flex-1 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 sm:min-w-48"
           />
