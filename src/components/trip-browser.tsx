@@ -46,8 +46,8 @@ export function TripBrowser({ trips }: { trips: Trip[] }) {
       </div>
 
       <section aria-label="Upcoming trips" className="grid items-start gap-5 lg:grid-cols-2">
-        <RouteColumn direction="Berlin → Zagreb" description="Southbound rides" tone="blue" trips={filteredTrips.filter((trip) => trip.direction === "berlin-zagreb")} />
-        <RouteColumn direction="Zagreb → Berlin" description="Northbound rides" tone="orange" trips={filteredTrips.filter((trip) => trip.direction === "zagreb-berlin")} />
+        <RouteColumn direction="Berlin → Zagreb" description="Southbound rides" tone="orange" trips={filteredTrips.filter((trip) => trip.direction === "berlin-zagreb")} />
+        <RouteColumn direction="Zagreb → Berlin" description="Northbound rides" tone="blue" trips={filteredTrips.filter((trip) => trip.direction === "zagreb-berlin")} />
       </section>
     </>
   );

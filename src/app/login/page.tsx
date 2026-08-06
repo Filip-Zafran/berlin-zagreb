@@ -5,7 +5,7 @@ import { AuthNotice, AuthShell, inputClass, submitClass } from "@/components/aut
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string; message?: string; next?: string }> }) {
   const query = await searchParams;
   return (
-    <AuthShell eyebrow="Welcome back" title="Log in to Via" description="Continue to your trips and private conversations." footer={<>New here? <Link className="font-bold text-slate-950 hover:underline" href="/register">Create an account</Link></>}>
+    <AuthShell eyebrow="Welcome back" title="Log in to Berlin <> Zagreb prijevoz" description="Continue to your trips and private conversations." footer={<>New here? <Link className="font-bold text-slate-950 hover:underline" href="/register">Create an account</Link></>}>
       <AuthNotice error={query.error} message={query.message} />
       <form action={login} className="space-y-5">
         <input type="hidden" name="next" value={query.next ?? "/dashboard"} />

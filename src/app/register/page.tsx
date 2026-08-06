@@ -5,7 +5,7 @@ import { AuthNotice, AuthShell, inputClass, submitClass } from "@/components/aut
 export default async function RegisterPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   const query = await searchParams;
   return (
-    <AuthShell eyebrow="Join Via" title="Create your account" description="You only need a name, email, and password to get started." footer={<>Already registered? <Link className="font-bold text-slate-950 hover:underline" href="/login">Log in</Link></>}>
+    <AuthShell eyebrow="Join Berlin <> Zagreb prijevoz" title="Create your account" description="You only need a name, email, and password to get started." footer={<>Already registered? <Link className="font-bold text-slate-950 hover:underline" href="/login">Log in</Link></>}>
       <AuthNotice error={query.error} />
       <form action={register} className="space-y-5">
         <label className="block text-sm font-bold text-slate-700">First name<input className={inputClass} name="firstName" autoComplete="given-name" required placeholder="Marta" /></label>

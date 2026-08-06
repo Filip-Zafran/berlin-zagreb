@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Via — Berlin & Zagreb rides",
+  title: "Berlin <> Zagreb prijevoz",
   description: "Find and share rides between Berlin and Zagreb.",
 };
 

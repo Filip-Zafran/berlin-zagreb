@@ -5,8 +5,9 @@ import { Header } from "@/components/header";
 import { DriverAvatar } from "@/components/trip-card";
 import { trips } from "@/data/trips";
 import { getPublishedTrip } from "@/lib/trips";
+import { startConversation } from "@/app/chat/actions";
 
-type TripPageProps = { params: Promise<{ id: string }> };
+type TripPageProps = { params: Promise<{ id: string }>; searchParams?: Promise<{ error?: string }> };
 
 const dateFormatter = new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 const timeFormatter = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false });
@@ -17,16 +18,19 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: TripPageProps): Promise<Metadata> {
   const trip = await getPublishedTrip((await params).id);
-  return trip ? { title: `${trip.startCity} to ${trip.destinationCity} with ${trip.driver.name} — Via` } : {};
+  return trip ? { title: `${trip.startCity} to ${trip.destinationCity} with ${trip.driver.name} — Berlin <> Zagreb prijevoz` } : {};
 }
 
-export default async function TripPage({ params }: TripPageProps) {
-  const trip = await getPublishedTrip((await params).id);
+export default async function TripPage({ params, searchParams }: TripPageProps) {
+  const tripId = (await params).id;
+  const trip = await getPublishedTrip(tripId);
   if (!trip) notFound();
 
   const departure = new Date(trip.departure);
   const isBlue = trip.direction === "berlin-zagreb";
   const stops = [trip.startCity, ...trip.stops, trip.destinationCity];
+  const canMessage = /^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(tripId);
+  const error = (await searchParams)?.error;
 
   return (
     <div className="min-h-screen bg-stone-50">
@@ -76,6 +80,7 @@ export default async function TripPage({ params }: TripPageProps) {
           </section>
 
           <aside className="rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_18px_50px_-35px_rgba(15,23,42,0.4)] sm:p-6">
+            {error && <p role="alert" className="mb-5 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
             <div className="flex items-center gap-4">
               <DriverAvatar trip={trip} size="large" />
               <div>
@@ -87,10 +92,8 @@ export default async function TripPage({ params }: TripPageProps) {
             <div className="mt-4 flex flex-wrap gap-2">
               {trip.driver.languages.map((language) => <span key={language} className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">{language}</span>)}
             </div>
-            <Link href="/login" className="focus-ring mt-6 flex min-h-12 w-full items-center justify-center rounded-xl bg-slate-950 px-5 text-sm font-bold text-white transition hover:bg-slate-800">
-              Message driver
-            </Link>
-            <p className="mt-3 text-center text-xs leading-5 text-slate-400">Log in to start a private conversation.</p>
+            {canMessage ? <form action={startConversation} className="mt-6"><input type="hidden" name="tripId" value={tripId} /><button className="focus-ring flex min-h-12 w-full items-center justify-center rounded-xl bg-slate-950 px-5 text-sm font-bold text-white transition hover:bg-slate-800">Message driver</button></form> : <button disabled className="mt-6 flex min-h-12 w-full items-center justify-center rounded-xl bg-slate-200 px-5 text-sm font-bold text-slate-500">Demo trip</button>}
+            <p className="mt-3 text-center text-xs leading-5 text-slate-400">{canMessage ? "Log in to start or continue a private conversation." : "Publish a live trip through Supabase to test messaging."}</p>
           </aside>
         </div>
       </main>

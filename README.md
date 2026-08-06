@@ -1,4 +1,4 @@
-# Via — Berlin & Zagreb rides
+# Berlin <> Zagreb prijevoz
 
 A lightweight ride-sharing MVP for drivers and passengers travelling between Berlin and Zagreb.
 

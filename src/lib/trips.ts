@@ -10,7 +10,7 @@ type DatabaseTrip = {
 
 function mapTrip(row: DatabaseTrip, avatarUrl?: string): Trip {
   const name = row.profiles?.first_name || "Driver";
-  return { id: row.id, direction: row.direction, departure: row.departure_at, car: row.car_model, startCity: row.starting_city, destinationCity: row.destination_city, pickup: row.starting_city, dropoff: row.destination_city, stops: [...(row.trip_stops || [])].sort((a, b) => a.position - b.position).map((stop) => stop.city), notes: row.notes, driver: { name, initials: name.slice(0, 2).toUpperCase(), photo: "from-blue-500 to-indigo-700", avatarUrl, bio: row.profiles?.bio || "Via driver travelling between Berlin and Zagreb.", languages: row.profiles?.languages || [] } };
+  return { id: row.id, direction: row.direction, departure: row.departure_at, car: row.car_model, startCity: row.starting_city, destinationCity: row.destination_city, pickup: row.starting_city, dropoff: row.destination_city, stops: [...(row.trip_stops || [])].sort((a, b) => a.position - b.position).map((stop) => stop.city), notes: row.notes, driver: { name, initials: name.slice(0, 2).toUpperCase(), photo: "from-blue-500 to-indigo-700", avatarUrl, bio: row.profiles?.bio || "Driver travelling between Berlin and Zagreb.", languages: row.profiles?.languages || [] } };
 }
 
 export async function getUpcomingTrips() {

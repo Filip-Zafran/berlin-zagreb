@@ -10,13 +10,13 @@ type RouteColumnProps = {
 
 const styles = {
   blue: {
-    shell: "border-blue-200/80",
+    shell: "border-blue-200/80 bg-blue-50/70",
     badge: "bg-blue-100 text-blue-700",
     dot: "bg-blue-500",
     line: "from-blue-200",
   },
   orange: {
-    shell: "border-orange-200/80",
+    shell: "border-orange-200/80 bg-orange-50/70",
     badge: "bg-orange-100 text-orange-700",
     dot: "bg-orange-500",
     line: "from-orange-200",
@@ -27,7 +27,7 @@ export function RouteColumn({ direction, description, tone, trips }: RouteColumn
   const theme = styles[tone];
 
   return (
-    <article className={`overflow-hidden rounded-3xl border bg-white shadow-[0_12px_40px_-30px_rgba(15,23,42,0.35)] ${theme.shell}`}>
+    <article className={`overflow-hidden rounded-3xl border shadow-[0_12px_40px_-30px_rgba(15,23,42,0.35)] ${theme.shell}`}>
       <header className="flex items-center justify-between gap-4 border-b border-slate-100 px-5 py-5 sm:px-6">
         <div>
           <div className="flex items-center gap-2.5">

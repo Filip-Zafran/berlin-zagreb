@@ -29,7 +29,7 @@ export function AuthShell({ eyebrow, title, description, children, footer }: { e
 }
 
 function LogoOnDark() {
-  return <Link href="/" className="focus-ring inline-flex w-fit items-center gap-2 rounded-lg"><span className="grid size-9 place-items-center rounded-xl bg-white text-lg font-black text-slate-950">v</span><span className="text-xl font-bold tracking-[-0.04em]">via</span></Link>;
+  return <div className="w-fit rounded-lg bg-white px-2"><Logo /></div>;
 }
 
 export function AuthNotice({ error, message }: { error?: string; message?: string }) {
