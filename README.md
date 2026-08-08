@@ -10,7 +10,7 @@ A lightweight ride-sharing MVP for drivers and passengers travelling between Ber
 4. Add `http://localhost:3000/auth/callback` to the allowed redirect URLs in Supabase Authentication.
 5. Start the app with `npm run dev`.
 
-The public trip demo works without Supabase credentials. Authentication and protected pages require a configured Supabase project.
+Without Supabase credentials, the public trip list is empty. Authentication and protected pages require a configured Supabase project.
 
 ## Getting Started
 

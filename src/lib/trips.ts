@@ -1,4 +1,4 @@
-import { trips as demoTrips, type Trip } from "@/data/trips";
+import type { Trip } from "@/data/trips";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 
@@ -14,7 +14,7 @@ function mapTrip(row: DatabaseTrip, avatarUrl?: string): Trip {
 }
 
 export async function getUpcomingTrips() {
-  if (!isSupabaseConfigured()) return demoTrips;
+  if (!isSupabaseConfigured()) return [];
   const supabase = await createClient();
   const { data } = await supabase.from("trips").select("id, direction, departure_at, car_model, starting_city, destination_city, notes, profiles(first_name, avatar_path, bio, languages), trip_stops(city, position)").gte("departure_at", new Date().toISOString()).order("departure_at");
   return ((data ?? []) as unknown as DatabaseTrip[]).map((row) => {
@@ -24,7 +24,6 @@ export async function getUpcomingTrips() {
 }
 
 export async function getPublishedTrip(id: string) {
-  const demo = demoTrips.find((trip) => trip.id === id); if (demo) return demo;
   if (!isSupabaseConfigured()) return undefined;
   const supabase = await createClient();
   const { data } = await supabase.from("trips").select("id, direction, departure_at, car_model, starting_city, destination_city, notes, profiles(first_name, avatar_path, bio, languages), trip_stops(city, position)").eq("id", id).single();

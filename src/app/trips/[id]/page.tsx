@@ -3,7 +3,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/header";
 import { DriverAvatar } from "@/components/trip-card";
-import { trips } from "@/data/trips";
 import { getPublishedTrip } from "@/lib/trips";
 import { startConversation } from "@/app/chat/actions";
 
@@ -11,10 +10,6 @@ type TripPageProps = { params: Promise<{ id: string }>; searchParams?: Promise<{
 
 const dateFormatter = new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 const timeFormatter = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false });
-
-export function generateStaticParams() {
-  return trips.map((trip) => ({ id: trip.id }));
-}
 
 export async function generateMetadata({ params }: TripPageProps): Promise<Metadata> {
   const trip = await getPublishedTrip((await params).id);
@@ -29,7 +24,6 @@ export default async function TripPage({ params, searchParams }: TripPageProps) 
   const departure = new Date(trip.departure);
   const isBlue = trip.direction === "berlin-zagreb";
   const stops = [trip.startCity, ...trip.stops, trip.destinationCity];
-  const canMessage = /^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(tripId);
   const error = (await searchParams)?.error;
 
   return (
@@ -92,8 +86,8 @@ export default async function TripPage({ params, searchParams }: TripPageProps) 
             <div className="mt-4 flex flex-wrap gap-2">
               {trip.driver.languages.map((language) => <span key={language} className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">{language}</span>)}
             </div>
-            {canMessage ? <form action={startConversation} className="mt-6"><input type="hidden" name="tripId" value={tripId} /><button className="focus-ring flex min-h-12 w-full items-center justify-center rounded-xl bg-slate-950 px-5 text-sm font-bold text-white transition hover:bg-slate-800">Message driver</button></form> : <button disabled className="mt-6 flex min-h-12 w-full items-center justify-center rounded-xl bg-slate-200 px-5 text-sm font-bold text-slate-500">Demo trip</button>}
-            <p className="mt-3 text-center text-xs leading-5 text-slate-400">{canMessage ? "Log in to start or continue a private conversation." : "Publish a live trip through Supabase to test messaging."}</p>
+            <form action={startConversation} className="mt-6"><input type="hidden" name="tripId" value={tripId} /><button className="focus-ring flex min-h-12 w-full items-center justify-center rounded-xl bg-slate-950 px-5 text-sm font-bold text-white transition hover:bg-slate-800">Message driver</button></form>
+            <p className="mt-3 text-center text-xs leading-5 text-slate-400">Log in to start or continue a private conversation.</p>
           </aside>
         </div>
       </main>
