@@ -40,7 +40,7 @@ export function TripCard({ trip, tone }: { trip: Trip; tone: "blue" | "orange" }
       </div>
 
       <div className="mt-5 flex items-center justify-between gap-3 border-t border-slate-100 pt-4">
-        <p className="min-w-0 truncate text-xs font-medium text-slate-500">{trip.pickup} → {trip.dropoff}</p>
+        <div className="min-w-0"><p className="truncate text-xs font-medium text-slate-500">{trip.pickup} → {trip.dropoff}</p>{trip.price && <p className="mt-1 truncate text-sm font-bold text-slate-900">{trip.price}</p>}</div>
         <Link href={`/trips/${trip.id}`} className="focus-ring shrink-0 rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800">
           Open trip
         </Link>

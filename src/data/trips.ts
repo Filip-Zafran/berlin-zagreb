@@ -15,6 +15,7 @@ export type Trip = {
   departure: string;
   driver: Driver;
   car: string;
+  price: string;
   startCity: "Berlin" | "Zagreb";
   destinationCity: "Berlin" | "Zagreb";
   pickup: string;

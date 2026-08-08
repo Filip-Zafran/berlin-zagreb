@@ -60,10 +60,14 @@ export default async function TripPage({ params, searchParams }: TripPageProps) 
                 ))}
               </ol>
 
-              <div className="mt-3 grid gap-5 border-t border-slate-100 pt-6 sm:grid-cols-2">
+              <div className="mt-3 grid gap-5 border-t border-slate-100 pt-6 sm:grid-cols-3">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-400">Car</p>
                   <p className="mt-2 font-semibold text-slate-800">{trip.car}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-400">Price</p>
+                  <p className="mt-2 font-semibold text-slate-800">{trip.price || "By agreement"}</p>
                 </div>
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-400">Additional notes</p>
