@@ -13,6 +13,9 @@ export type Trip = {
   id: string;
   direction: TripDirection;
   departure: string;
+  flexibilityType: import("@/lib/travel-flexibility").FlexibilityType;
+  dateFlexibility?: import("@/lib/travel-flexibility").DateFlexibility;
+  timeFlexibility?: import("@/lib/travel-flexibility").TimeFlexibility;
   driver: Driver;
   car: string;
   price: string;

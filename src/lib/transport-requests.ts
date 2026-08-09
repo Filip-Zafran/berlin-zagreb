@@ -5,6 +5,11 @@ export type TransportRequest = {
   id: string;
   direction: "to-berlin" | "from-berlin";
   travelDate: string;
+  preferredTime: string;
+  departure: string;
+  flexibilityType: import("@/lib/travel-flexibility").FlexibilityType;
+  dateFlexibility?: import("@/lib/travel-flexibility").DateFlexibility;
+  timeFlexibility?: import("@/lib/travel-flexibility").TimeFlexibility;
   pickup: string;
   dropoff: string;
   notes: string;
@@ -15,6 +20,10 @@ type DatabaseRequest = {
   id: string;
   direction: TransportRequest["direction"];
   travel_date: string;
+  preferred_time: string;
+  flexibility_type: TransportRequest["flexibilityType"];
+  date_flexibility: TransportRequest["dateFlexibility"] | null;
+  time_flexibility: TransportRequest["timeFlexibility"] | null;
   pickup: string;
   dropoff: string;
   notes: string;
@@ -27,7 +36,7 @@ export async function getUpcomingTransportRequests(): Promise<TransportRequest[]
   const today = new Date().toISOString().slice(0, 10);
   const { data } = await supabase
     .from("transport_requests")
-    .select("id, direction, travel_date, pickup, dropoff, notes, profiles(first_name, avatar_path)")
+    .select("id, direction, travel_date, preferred_time, flexibility_type, date_flexibility, time_flexibility, pickup, dropoff, notes, profiles(first_name, avatar_path)")
     .gte("travel_date", today)
     .order("travel_date");
 
@@ -38,6 +47,11 @@ export async function getUpcomingTransportRequests(): Promise<TransportRequest[]
       id: row.id,
       direction: row.direction,
       travelDate: row.travel_date,
+      preferredTime: row.preferred_time.slice(0, 5),
+      departure: `${row.travel_date}T${row.preferred_time}`,
+      flexibilityType: row.flexibility_type || "fixed",
+      dateFlexibility: row.date_flexibility || undefined,
+      timeFlexibility: row.time_flexibility || undefined,
       pickup: row.pickup,
       dropoff: row.dropoff,
       notes: row.notes,

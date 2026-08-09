@@ -5,9 +5,22 @@ import { getUpcomingTrips } from "@/lib/trips";
 import { getUpcomingTransportRequests } from "@/lib/transport-requests";
 import Image from "next/image";
 import brandLogo from "@/images/zagreb berlin logo with text.png";
+import { matchDistance } from "@/lib/travel-flexibility";
 
 export default async function Home() {
   const [trips, requests] = await Promise.all([getUpcomingTrips(), getUpcomingTransportRequests()]);
+  const closestRequest = (trip: (typeof trips)[number]) => {
+    const direction = trip.direction === "berlin-zagreb" ? "from-berlin" : "to-berlin";
+    const distances = requests.filter((request) => request.direction === direction).map((request) => matchDistance(trip, request)).filter((distance): distance is number => distance !== null);
+    return distances.length ? Math.min(...distances) : Number.POSITIVE_INFINITY;
+  };
+  const closestTrip = (request: (typeof requests)[number]) => {
+    const direction = request.direction === "from-berlin" ? "berlin-zagreb" : "zagreb-berlin";
+    const distances = trips.filter((trip) => trip.direction === direction).map((trip) => matchDistance(request, trip)).filter((distance): distance is number => distance !== null);
+    return distances.length ? Math.min(...distances) : Number.POSITIVE_INFINITY;
+  };
+  const rankedTrips = [...trips].sort((a, b) => closestRequest(a) - closestRequest(b) || new Date(a.departure).getTime() - new Date(b.departure).getTime());
+  const rankedRequests = [...requests].sort((a, b) => closestTrip(a) - closestTrip(b) || new Date(a.departure).getTime() - new Date(b.departure).getTime());
   return (
     <div className="min-h-screen bg-stone-50">
       <Header />
@@ -24,8 +37,8 @@ export default async function Home() {
           </div>
         </section>
 
-        <TripBrowser trips={trips} />
-        <TransportRequestBrowser requests={requests} />
+        <TripBrowser trips={rankedTrips} />
+        <TransportRequestBrowser requests={rankedRequests} />
       </main>
     </div>
   );

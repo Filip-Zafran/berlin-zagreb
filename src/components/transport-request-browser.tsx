@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { TransportRequest } from "@/lib/transport-requests";
+import { FlexibilityBadge } from "@/components/flexibility-badge";
 
 const dateFormatter = new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short" });
 
@@ -22,11 +23,12 @@ function RequestCard({ request, tone }: { request: TransportRequest; tone: "blue
             <p className="text-xs text-slate-500">Looking for transport</p>
           </div>
         </div>
-        <p className="shrink-0 text-sm font-bold text-slate-950">{dateFormatter.format(new Date(`${request.travelDate}T12:00:00`))}</p>
+        <div className="shrink-0 text-right"><p className="text-sm font-bold text-slate-950">{dateFormatter.format(new Date(`${request.travelDate}T12:00:00`))}</p><p className="mt-0.5 text-xs font-semibold text-slate-500">{request.preferredTime}</p></div>
       </div>
       <div className="mt-5">
         <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-400">Requested route</p>
         <p className="mt-2 text-sm font-semibold leading-6 text-slate-800">{request.pickup} → {request.dropoff}</p>
+        <div className="mt-3"><FlexibilityBadge schedule={request} /></div>
         {request.notes && <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-500">{request.notes}</p>}
       </div>
     </article>

@@ -2,9 +2,12 @@
 
 import { useState } from "react";
 import { inputClass, submitClass } from "@/components/auth-shell";
+import { TravelFlexibilityFields } from "@/components/travel-flexibility-fields";
+import type { FlexibilityType } from "@/lib/travel-flexibility";
 
 export function TransportRequestForm({ action }: { action: (data: FormData) => void | Promise<void> }) {
   const [direction, setDirection] = useState("to-berlin");
+  const [flexibilityType, setFlexibilityType] = useState<FlexibilityType>("fixed");
   const today = new Date();
   const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
   const goingToBerlin = direction === "to-berlin";
@@ -17,9 +20,8 @@ export function TransportRequestForm({ action }: { action: (data: FormData) => v
           <option value="from-berlin">From Berlin</option>
         </select>
       </label>
-      <label className="block text-sm font-bold text-slate-700">Travel date
-        <input className={inputClass} name="travelDate" type="date" min={todayKey} required />
-      </label>
+      <TravelFlexibilityFields type={flexibilityType} onTypeChange={setFlexibilityType} />
+      <input type="hidden" name="today" value={todayKey} />
       <div className="grid gap-5 sm:grid-cols-2">
         <label className="block text-sm font-bold text-slate-700">Pickup
           <input className={inputClass} name="pickup" required maxLength={100} placeholder={goingToBerlin ? "Zagreb or nearby" : "Berlin or nearby"} />

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Trip } from "@/data/trips";
+import { FlexibilityBadge } from "@/components/flexibility-badge";
 
 const dateFormatter = new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short" });
 const timeFormatter = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false });
@@ -37,6 +38,7 @@ export function TripCard({ trip, tone }: { trip: Trip; tone: "blue" | "orange" }
         <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-400">Route</p>
         <p className="mt-2 text-sm font-semibold leading-6 text-slate-800">{route.join(" → ")}</p>
         {trip.petFriendly && <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700"><span aria-hidden="true">🐾</span>Pet Friendly</span>}
+        <div className="mt-3"><FlexibilityBadge schedule={trip} /></div>
         <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-500">{trip.notes}</p>
       </div>
 

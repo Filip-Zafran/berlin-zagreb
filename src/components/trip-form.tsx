@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import { inputClass, submitClass } from "@/components/auth-shell";
+import { TravelFlexibilityFields } from "@/components/travel-flexibility-fields";
+import type { DateFlexibility, FlexibilityType, TimeFlexibility } from "@/lib/travel-flexibility";
 
-type InitialTrip = { id?: string; direction?: string; date?: string; time?: string; carModel?: string; price?: string; petFriendly?: boolean; stops?: string[]; notes?: string };
+type InitialTrip = { id?: string; direction?: string; date?: string; time?: string; flexibilityType?: FlexibilityType; dateFlexibility?: DateFlexibility; timeFlexibility?: TimeFlexibility; carModel?: string; price?: string; petFriendly?: boolean; stops?: string[]; notes?: string };
 
 export function TripForm({ action, initial = {} }: { action: (data: FormData) => void | Promise<void>; initial?: InitialTrip }) {
   const [direction, setDirection] = useState(initial.direction ?? "berlin-zagreb");
+  const [flexibilityType, setFlexibilityType] = useState<FlexibilityType>(initial.flexibilityType ?? "fixed");
   const [stops, setStops] = useState<string[]>(initial.stops ?? []);
   const [newStop, setNewStop] = useState("");
   const move = (index: number, offset: number) => { const next = [...stops]; const target = index + offset; if (target < 0 || target >= next.length) return; [next[index], next[target]] = [next[target], next[index]]; setStops(next); };
@@ -14,7 +17,7 @@ export function TripForm({ action, initial = {} }: { action: (data: FormData) =>
   return <form action={action} className="mt-8 space-y-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
     {initial.id && <input type="hidden" name="id" value={initial.id} />}<input type="hidden" name="stops" value={JSON.stringify(stops)} />
     <label className="block text-sm font-bold text-slate-700">Direction<select className={inputClass} name="direction" value={direction} onChange={(e) => setDirection(e.target.value)}><option value="berlin-zagreb">Berlin → Zagreb</option><option value="zagreb-berlin">Zagreb → Berlin</option></select></label>
-    <div className="grid gap-5 sm:grid-cols-2"><label className="block text-sm font-bold text-slate-700">Departure date<input className={inputClass} name="date" type="date" required defaultValue={initial.date} /></label><label className="block text-sm font-bold text-slate-700">Departure time<input className={inputClass} name="time" type="time" required defaultValue={initial.time} /></label></div>
+    <TravelFlexibilityFields type={flexibilityType} onTypeChange={setFlexibilityType} date={initial.date} time={initial.time} dateFlexibility={initial.dateFlexibility} timeFlexibility={initial.timeFlexibility} />
     <label className="block text-sm font-bold text-slate-700">Car model<input className={inputClass} name="carModel" required maxLength={100} defaultValue={initial.carModel} placeholder="Volkswagen Passat" /></label>
     <label className="block text-sm font-bold text-slate-700">Price<input className={inputClass} name="price" maxLength={100} defaultValue={initial.price} placeholder="€80, by agreement, or your preferred terms" /><span className="mt-2 block text-xs font-normal text-slate-400">Write the amount or arrangement in your own words.</span></label>
     <label className="flex cursor-pointer items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm font-bold text-slate-700"><input type="checkbox" name="petFriendly" defaultChecked={initial.petFriendly} className="size-5 rounded border-slate-300 accent-emerald-600" /><span><span className="mr-2" aria-hidden="true">🐾</span>Pet Friendly<span className="mt-1 block text-xs font-normal text-slate-500">Pets are welcome on this trip.</span></span></label>

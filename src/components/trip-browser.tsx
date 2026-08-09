@@ -12,8 +12,7 @@ export function TripBrowser({ trips }: { trips: Trip[] }) {
     () =>
       trips
         .filter((trip) => trip.departure.slice(0, 10) >= todayKey)
-        .filter((trip) => !selectedDate || trip.departure.slice(0, 10) === selectedDate)
-        .sort((a, b) => new Date(a.departure).getTime() - new Date(b.departure).getTime()),
+        .filter((trip) => !selectedDate || trip.departure.slice(0, 10) === selectedDate),
     [selectedDate, todayKey, trips],
   );
 

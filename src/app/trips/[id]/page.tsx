@@ -5,6 +5,7 @@ import { Header } from "@/components/header";
 import { DriverAvatar } from "@/components/trip-card";
 import { getPublishedTrip } from "@/lib/trips";
 import { startConversation } from "@/app/chat/actions";
+import { FlexibilityBadge } from "@/components/flexibility-badge";
 
 type TripPageProps = { params: Promise<{ id: string }>; searchParams?: Promise<{ error?: string }> };
 
@@ -39,6 +40,7 @@ export default async function TripPage({ params, searchParams }: TripPageProps) 
             <div className="border-b border-slate-100 p-5 sm:p-8">
               <span className={`inline-flex rounded-full px-3 py-1.5 text-xs font-bold ${isBlue ? "bg-blue-100 text-blue-700" : "bg-orange-100 text-orange-700"}`}>{trip.startCity} → {trip.destinationCity}</span>
               {trip.petFriendly && <span className="ml-2 inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700"><span aria-hidden="true">🐾</span>Pet Friendly</span>}
+              <span className="ml-2 inline-flex"><FlexibilityBadge schedule={trip} /></span>
               <h1 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">{dateFormatter.format(departure)}</h1>
               <p className="mt-2 text-lg font-semibold text-slate-500">Departure at {timeFormatter.format(departure)}</p>
             </div>
