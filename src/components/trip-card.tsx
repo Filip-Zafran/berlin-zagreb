@@ -36,7 +36,7 @@ export function TripCard({ trip, tone }: { trip: Trip; tone: "blue" | "orange" }
       <div className="mt-5">
         <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-400">Route</p>
         <p className="mt-2 text-sm font-semibold leading-6 text-slate-800">{route.join(" → ")}</p>
-        {trip.petFriendly && <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700"><span aria-hidden="true">🐕</span>Pet Friendly</span>}
+        {trip.petFriendly && <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700"><span aria-hidden="true">🐾</span>Pet Friendly</span>}
         <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-500">{trip.notes}</p>
       </div>
 

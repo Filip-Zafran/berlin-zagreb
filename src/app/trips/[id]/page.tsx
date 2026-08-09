@@ -38,7 +38,7 @@ export default async function TripPage({ params, searchParams }: TripPageProps) 
           <section className={`overflow-hidden rounded-3xl border bg-white shadow-[0_18px_50px_-35px_rgba(15,23,42,0.4)] ${isBlue ? "border-blue-200" : "border-orange-200"}`}>
             <div className="border-b border-slate-100 p-5 sm:p-8">
               <span className={`inline-flex rounded-full px-3 py-1.5 text-xs font-bold ${isBlue ? "bg-blue-100 text-blue-700" : "bg-orange-100 text-orange-700"}`}>{trip.startCity} → {trip.destinationCity}</span>
-              {trip.petFriendly && <span className="ml-2 inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700"><span aria-hidden="true">🐕</span>Pet Friendly</span>}
+              {trip.petFriendly && <span className="ml-2 inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700"><span aria-hidden="true">🐾</span>Pet Friendly</span>}
               <h1 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">{dateFormatter.format(departure)}</h1>
               <p className="mt-2 text-lg font-semibold text-slate-500">Departure at {timeFormatter.format(departure)}</p>
             </div>
