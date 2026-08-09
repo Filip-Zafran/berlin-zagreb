@@ -41,3 +41,13 @@ export async function createTransportRequest(formData: FormData) {
   revalidatePath("/");
   redirect("/?message=Request%20published.#transport-requests-heading");
 }
+
+export async function deleteTransportRequest(formData: FormData) {
+  const id = String(formData.get("id") ?? "");
+  const { supabase, user } = await requireUser("/dashboard");
+  const { error } = await supabase.from("transport_requests").delete().eq("id", id).eq("passenger_id", user.id);
+  if (error) redirect(`/dashboard?error=${encodeURIComponent(error.message)}`);
+  revalidatePath("/");
+  revalidatePath("/dashboard");
+  redirect("/dashboard?message=Transport%20request%20deleted.");
+}
