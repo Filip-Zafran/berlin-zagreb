@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { sendMessage } from "@/app/chat/actions";
 
 export type ChatMessage = { id: string; conversation_id: string; sender_id: string; body: string; created_at: string };
 
@@ -33,10 +34,9 @@ export function ChatRoom({ conversationId, userId, otherName, initialMessages, o
 
   async function send(event: React.FormEvent) {
     event.preventDefault(); const text = body.trim(); if (!text || sending) return; setSending(true); setNotice("");
-    const supabase = createClient();
-    const { data, error } = await supabase.from("messages").insert({ conversation_id: conversationId, sender_id: userId, body: text }).select("id, conversation_id, sender_id, body, created_at").single();
-    if (!error && data) { setMessages((current) => current.some((item) => item.id === data.id) ? current : [...current, data]); setBody(""); }
-    else setNotice(error?.message ?? "Message could not be sent."); setSending(false);
+    const result = await sendMessage(conversationId, text);
+    if ("data" in result && result.data) { const data = result.data as ChatMessage; setMessages((current) => current.some((item) => item.id === data.id) ? current : [...current, data]); setBody(""); }
+    else setNotice(result.error ?? "Message could not be sent."); setSending(false);
   }
 
   return <div className="flex min-h-[620px] flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">

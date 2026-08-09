@@ -31,6 +31,7 @@ function RequestCard({ request, tone }: { request: TransportRequest; tone: "blue
         <div className="mt-3"><FlexibilityBadge schedule={request} /></div>
         {request.notes && <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-500">{request.notes}</p>}
       </div>
+      <div className="mt-5 border-t border-slate-100 pt-4 text-right"><Link href={`/requests/${request.id}`} className="focus-ring inline-flex rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white hover:bg-slate-800">Open request</Link></div>
     </article>
   );
 }

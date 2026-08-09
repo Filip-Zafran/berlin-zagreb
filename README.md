@@ -21,6 +21,16 @@ In Supabase Dashboard → Authentication → URL Configuration:
 
 These settings are required so email confirmations return to the production callback instead of Supabase falling back to localhost.
 
+## Chat email notifications
+
+Add these server-only environment variables in Vercel:
+
+- `SUPABASE_SERVICE_ROLE_KEY`: the secret service-role key from Supabase API Keys.
+- `BREVO_API_KEY`: a Brevo API key with transactional-email access (not the SMTP key).
+- `NOTIFICATION_FROM_EMAIL`: the sender address verified in Brevo.
+
+Never expose the service-role or Brevo keys using a `NEXT_PUBLIC_` prefix.
+
 ## Getting Started
 
 First, run the development server:

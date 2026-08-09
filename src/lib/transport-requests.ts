@@ -63,3 +63,13 @@ export async function getUpcomingTransportRequests(): Promise<TransportRequest[]
     };
   });
 }
+
+export async function getPublishedTransportRequest(id: string): Promise<(TransportRequest & { passengerId: string }) | undefined> {
+  if (!isSupabaseConfigured()) return undefined;
+  const supabase = await createClient();
+  const { data } = await supabase.from("transport_requests").select("id, passenger_id, direction, travel_date, preferred_time, flexibility_type, date_flexibility, time_flexibility, pickup, dropoff, notes, profiles(first_name, avatar_path)").eq("id", id).single();
+  if (!data) return undefined;
+  const row = data as unknown as DatabaseRequest & { passenger_id: string };
+  const name = row.profiles?.first_name || "Traveller"; const path = row.profiles?.avatar_path;
+  return { id: row.id, passengerId: row.passenger_id, direction: row.direction, travelDate: row.travel_date, preferredTime: row.preferred_time.slice(0, 5), departure: `${row.travel_date}T${row.preferred_time}`, flexibilityType: row.flexibility_type || "fixed", dateFlexibility: row.date_flexibility || undefined, timeFlexibility: row.time_flexibility || undefined, pickup: row.pickup, dropoff: row.dropoff, notes: row.notes, passenger: { name, initials: name.slice(0, 2).toUpperCase(), avatarUrl: path ? supabase.storage.from("avatars").getPublicUrl(path).data.publicUrl : undefined } };
+}
