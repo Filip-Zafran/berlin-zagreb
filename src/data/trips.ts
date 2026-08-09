@@ -16,6 +16,7 @@ export type Trip = {
   driver: Driver;
   car: string;
   price: string;
+  petFriendly: boolean;
   startCity: "Berlin" | "Zagreb";
   destinationCity: "Berlin" | "Zagreb";
   pickup: string;
