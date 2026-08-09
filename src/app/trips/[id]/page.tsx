@@ -24,7 +24,9 @@ export default async function TripPage({ params, searchParams }: TripPageProps) 
 
   const departure = new Date(trip.departure);
   const isBlue = trip.direction === "berlin-zagreb";
-  const stops = [trip.startCity, ...trip.stops, trip.destinationCity];
+  const stops = trip.direction === "zagreb-berlin"
+    ? [trip.zagrebSideEndpoint, trip.startCity, ...trip.stops, trip.destinationCity].filter((stop): stop is string => Boolean(stop))
+    : [trip.startCity, ...trip.stops, trip.destinationCity, trip.zagrebSideEndpoint].filter((stop): stop is string => Boolean(stop));
   const error = (await searchParams)?.error;
 
   return (

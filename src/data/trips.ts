@@ -22,6 +22,7 @@ export type Trip = {
   petFriendly: boolean;
   startCity: "Berlin" | "Zagreb";
   destinationCity: "Berlin" | "Zagreb";
+  zagrebSideEndpoint?: string;
   pickup: string;
   dropoff: string;
   stops: string[];
