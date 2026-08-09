@@ -1,11 +1,13 @@
 import { Header } from "@/components/header";
 import { TripBrowser } from "@/components/trip-browser";
+import { TransportRequestBrowser } from "@/components/transport-request-browser";
 import { getUpcomingTrips } from "@/lib/trips";
+import { getUpcomingTransportRequests } from "@/lib/transport-requests";
 import Image from "next/image";
 import brandLogo from "@/images/zagreb berlin logo with text.png";
 
 export default async function Home() {
-  const trips = await getUpcomingTrips();
+  const [trips, requests] = await Promise.all([getUpcomingTrips(), getUpcomingTransportRequests()]);
   return (
     <div className="min-h-screen bg-stone-50">
       <Header />
@@ -23,6 +25,7 @@ export default async function Home() {
         </section>
 
         <TripBrowser trips={trips} />
+        <TransportRequestBrowser requests={requests} />
       </main>
     </div>
   );
