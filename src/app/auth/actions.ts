@@ -10,6 +10,13 @@ function authError(path: string, message: string): never {
   redirect(`${path}?error=${encodeURIComponent(message)}`);
 }
 
+function readableAuthError(error: { code?: string; message: string }) {
+  if (error.code === "over_email_send_rate_limit" || error.message.toLowerCase().includes("rate limit")) {
+    return "Too many confirmation emails have been requested. Please wait about an hour before trying again, or contact the site administrator.";
+  }
+  return error.message;
+}
+
 export async function login(formData: FormData) {
   if (!isSupabaseConfigured()) authError("/login", "Supabase credentials have not been added yet.");
   const email = String(formData.get("email") ?? "").trim();
@@ -36,7 +43,7 @@ export async function register(formData: FormData) {
     password,
     options: { data: { first_name: firstName }, emailRedirectTo: `${origin}/auth/callback` },
   });
-  if (error) authError("/register", error.message);
+  if (error) authError("/register", readableAuthError(error));
   if (data.session) redirect("/dashboard");
   redirect("/login?message=Check your email to confirm your account.");
 }
@@ -47,7 +54,7 @@ export async function requestPasswordReset(formData: FormData) {
   const origin = getSiteUrl((await headers()).get("origin"));
   const supabase = await createClient();
   const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${origin}/auth/callback?next=/reset-password` });
-  if (error) authError("/forgot-password", error.message);
+  if (error) authError("/forgot-password", readableAuthError(error));
   redirect("/forgot-password?message=Check your email for a password reset link.");
 }
 
