@@ -6,17 +6,29 @@ export async function sendEmailNotification(userId: string, subject: string, mes
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const brevoKey = process.env.BREVO_API_KEY;
   const senderEmail = process.env.NOTIFICATION_FROM_EMAIL;
-  if (!serviceKey || !brevoKey || !senderEmail) return;
+  const missingConfig = [
+    !serviceKey && "SUPABASE_SERVICE_ROLE_KEY",
+    !brevoKey && "BREVO_API_KEY",
+    !senderEmail && "NOTIFICATION_FROM_EMAIL",
+  ].filter(Boolean);
+
+  if (!serviceKey || !brevoKey || !senderEmail) {
+    console.error(`Email notification skipped: missing ${missingConfig.join(", ")}`);
+    return;
+  }
 
   try {
     const { url } = getSupabaseConfig();
     const admin = createSupabaseClient(url, serviceKey, { auth: { autoRefreshToken: false, persistSession: false } });
     const { data } = await admin.auth.admin.getUserById(userId);
     const recipient = data.user?.email;
-    if (!recipient) return;
+    if (!recipient) {
+      console.error(`Email notification skipped: no email found for user ${userId}`);
+      return;
+    }
 
     const link = `${getSiteUrl()}${path}`;
-    await fetch("https://api.brevo.com/v3/smtp/email", {
+    const response = await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
       headers: { "api-key": brevoKey, "content-type": "application/json", accept: "application/json" },
       body: JSON.stringify({
@@ -26,7 +38,13 @@ export async function sendEmailNotification(userId: string, subject: string, mes
         htmlContent: `<p>${message}</p><p><a href="${link}">Open conversation</a></p>`,
       }),
     });
-  } catch {
+
+    if (!response.ok) {
+      const details = await response.text();
+      console.error(`Brevo rejected email notification (${response.status}): ${details}`);
+    }
+  } catch (error) {
     // A temporary email-provider failure must not prevent chat delivery.
+    console.error("Email notification failed:", error);
   }
 }
