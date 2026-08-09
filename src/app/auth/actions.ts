@@ -38,6 +38,9 @@ export async function register(formData: FormData) {
 
   const origin = getSiteUrl((await headers()).get("origin"));
   const supabase = await createClient();
+  const { data: waitSeconds, error: counterError } = await supabase.rpc("reserve_registration_slot");
+  if (counterError) authError("/register", "Registration is temporarily unavailable. Please try again shortly.");
+  if (typeof waitSeconds === "number" && waitSeconds > 0) redirect(`/register?wait=${waitSeconds}`);
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
