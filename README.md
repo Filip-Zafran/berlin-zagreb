@@ -5,12 +5,21 @@ A lightweight ride-sharing MVP for drivers and passengers travelling between Ber
 ## Local setup
 
 1. Install dependencies with `npm install`.
-2. Copy `.env.example` to `.env.local` and add the URL and public anonymous key from your Supabase project.
+2. Copy `.env.example` to `.env.local` and add the URL and public anonymous key from your Supabase project. Set `NEXT_PUBLIC_SITE_URL=http://localhost:3000` locally and `NEXT_PUBLIC_SITE_URL=https://berlin-zagreb.vercel.app` in Vercel.
 3. Run `supabase/migrations/202608060001_initial_schema.sql` in the Supabase SQL editor.
 4. Add `http://localhost:3000/auth/callback` to the allowed redirect URLs in Supabase Authentication.
 5. Start the app with `npm run dev`.
 
 Without Supabase credentials, the public trip list is empty. Authentication and protected pages require a configured Supabase project.
+
+## Production authentication URLs
+
+In Supabase Dashboard → Authentication → URL Configuration:
+
+- Set **Site URL** to `https://berlin-zagreb.vercel.app`.
+- Add `https://berlin-zagreb.vercel.app/auth/callback` to **Redirect URLs**.
+
+These settings are required so email confirmations return to the production callback instead of Supabase falling back to localhost.
 
 ## Getting Started
 

@@ -19,7 +19,7 @@ export async function updateSession(request: NextRequest) {
   });
 
   const { data: { user } } = await supabase.auth.getUser();
-  const protectedPath = request.nextUrl.pathname.startsWith("/dashboard") || request.nextUrl.pathname.startsWith("/profile") || request.nextUrl.pathname.startsWith("/chat") || request.nextUrl.pathname.startsWith("/trips/new");
+  const protectedPath = request.nextUrl.pathname.startsWith("/dashboard") || request.nextUrl.pathname.startsWith("/profile") || request.nextUrl.pathname.startsWith("/chat") || request.nextUrl.pathname.startsWith("/trips/new") || request.nextUrl.pathname.startsWith("/requests/new");
 
   if (protectedPath && !user) {
     const url = request.nextUrl.clone();

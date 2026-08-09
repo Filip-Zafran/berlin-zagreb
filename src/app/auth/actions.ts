@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { getSiteUrl } from "@/lib/site-url";
 
 function authError(path: string, message: string): never {
   redirect(`${path}?error=${encodeURIComponent(message)}`);
@@ -28,7 +29,7 @@ export async function register(formData: FormData) {
   if (!firstName) authError("/register", "Please enter your first name.");
   if (password.length < 8) authError("/register", "Password must contain at least 8 characters.");
 
-  const origin = (await headers()).get("origin") ?? "http://localhost:3000";
+  const origin = getSiteUrl((await headers()).get("origin"));
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -43,7 +44,7 @@ export async function register(formData: FormData) {
 export async function requestPasswordReset(formData: FormData) {
   if (!isSupabaseConfigured()) authError("/forgot-password", "Supabase credentials have not been added yet.");
   const email = String(formData.get("email") ?? "").trim();
-  const origin = (await headers()).get("origin") ?? "http://localhost:3000";
+  const origin = getSiteUrl((await headers()).get("origin"));
   const supabase = await createClient();
   const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${origin}/auth/callback?next=/reset-password` });
   if (error) authError("/forgot-password", error.message);
