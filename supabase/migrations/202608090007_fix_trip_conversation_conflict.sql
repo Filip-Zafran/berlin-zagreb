@@ -32,8 +32,8 @@ begin
     raise exception 'Your profile is missing. Please contact support.';
   end if;
 
-  insert into public.conversations (trip_id, passenger_id)
-  values (target_trip_id, current_user_id)
+  insert into public.conversations (trip_id, transport_request_id, passenger_id)
+  values (target_trip_id, null, current_user_id)
   on conflict (trip_id, passenger_id) where trip_id is not null
   do update set trip_id = excluded.trip_id
   returning id into conversation_id;
