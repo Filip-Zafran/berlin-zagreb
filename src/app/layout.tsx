@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import socialLogo from "@/images/zagreb berlin logo with text.png";
+import { TechnicalSupportButton } from "@/components/technical-support-button";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -32,7 +33,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <TechnicalSupportButton />
+      </body>
     </html>
   );
 }
