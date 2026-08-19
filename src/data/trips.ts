@@ -1,6 +1,7 @@
 export type TripDirection = "berlin-zagreb" | "zagreb-berlin";
 
 export type Driver = {
+  id?: string;
   name: string;
   initials: string;
   photo: string;

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Header } from "@/components/header";
 import { DriverAvatar } from "@/components/trip-card";
 import { getPublishedTrip } from "@/lib/trips";
+import { createClient } from "@/lib/supabase/server";
 import { startConversation } from "@/app/chat/actions";
 import { FlexibilityBadge } from "@/components/flexibility-badge";
 
@@ -22,6 +23,9 @@ export default async function TripPage({ params, searchParams }: TripPageProps) 
   const trip = await getPublishedTrip(tripId);
   if (!trip) notFound();
 
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const isOwner = Boolean(user?.id && trip.driver.id && user.id === trip.driver.id);
   const departure = new Date(trip.departure);
   const isBlue = trip.direction === "berlin-zagreb";
   const stops = trip.direction === "zagreb-berlin"
@@ -92,6 +96,11 @@ export default async function TripPage({ params, searchParams }: TripPageProps) 
               </div>
             </div>
             <p className="mt-5 text-sm leading-6 text-slate-600">{trip.driver.bio}</p>
+            {isOwner && (
+              <div className="mt-4 flex gap-2">
+                <Link href={`/trips/${tripId}/edit`} className="focus-ring inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50">Edit trip</Link>
+              </div>
+            )}
             <div className="mt-4 flex flex-wrap gap-2">
               {trip.driver.languages.map((language) => <span key={language} className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">{language}</span>)}
             </div>
