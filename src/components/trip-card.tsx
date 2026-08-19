@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Trip } from "@/data/trips";
+import { deleteTrip } from "@/app/trips/actions";
 import { FlexibilityBadge } from "@/components/flexibility-badge";
 
 const dateFormatter = new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short" });
@@ -13,10 +14,11 @@ export function DriverAvatar({ trip, size = "small" }: { trip: Trip; size?: "sma
   );
 }
 
-export function TripCard({ trip, tone }: { trip: Trip; tone: "blue" | "orange" }) {
+export function TripCard({ trip, tone, currentUserId }: { trip: Trip; tone: "blue" | "orange"; currentUserId?: string }) {
   const departure = new Date(trip.departure);
   const accent = tone === "blue" ? "border-blue-200 hover:border-blue-300" : "border-orange-200 hover:border-orange-300";
   const route = [trip.startCity, ...trip.stops, trip.destinationCity];
+  const isOwner = Boolean(currentUserId && trip.driver.id && currentUserId === trip.driver.id);
 
   return (
     <article className={`rounded-2xl border bg-white p-4 shadow-[0_10px_30px_-25px_rgba(15,23,42,0.5)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_36px_-24px_rgba(15,23,42,0.45)] sm:p-5 ${accent}`}>
@@ -45,9 +47,18 @@ export function TripCard({ trip, tone }: { trip: Trip; tone: "blue" | "orange" }
 
       <div className="mt-5 flex items-center justify-between gap-3 border-t border-slate-100 pt-4">
         <div className="min-w-0"><p className="truncate text-xs font-medium text-slate-500">{trip.pickup} → {trip.dropoff}</p>{trip.price && <p className="mt-1 truncate text-sm font-bold text-slate-900">{trip.price}</p>}</div>
-        <Link href={`/trips/${trip.id}`} className="focus-ring shrink-0 rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800">
-          Open trip
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link href={`/trips/${trip.id}`} className="focus-ring shrink-0 rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800">Open trip</Link>
+          {isOwner && (
+            <>
+              <Link href={`/trips/${trip.id}/edit`} className="focus-ring shrink-0 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50">Edit</Link>
+              <form action={deleteTrip} method="post" className="m-0">
+                <input type="hidden" name="id" value={trip.id} />
+                <button type="submit" className="focus-ring shrink-0 rounded-xl border border-red-200 bg-white px-3 py-2 text-sm font-semibold text-red-600 hover:bg-red-50">Delete</button>
+              </form>
+            </>
+          )}
+        </div>
       </div>
     </article>
   );

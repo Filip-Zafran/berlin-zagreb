@@ -1,11 +1,13 @@
 import Link from "next/link";
 import type { TransportRequest } from "@/lib/transport-requests";
+import { deleteTransportRequest } from "@/app/requests/actions";
 import { FlexibilityBadge } from "@/components/flexibility-badge";
 
 const dateFormatter = new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short" });
 
-function RequestCard({ request, tone }: { request: TransportRequest; tone: "blue" | "orange" }) {
+function RequestCard({ request, tone, currentUserId }: { request: TransportRequest; tone: "blue" | "orange"; currentUserId?: string }) {
   const accent = tone === "blue" ? "border-blue-200" : "border-orange-200";
+  const isOwner = Boolean(currentUserId && (request as any).passengerId && currentUserId === (request as any).passengerId);
   return (
     <article className={`rounded-2xl border bg-white p-4 shadow-[0_10px_30px_-25px_rgba(15,23,42,0.5)] sm:p-5 ${accent}`}>
       <div className="flex items-start justify-between gap-4">
@@ -31,24 +33,37 @@ function RequestCard({ request, tone }: { request: TransportRequest; tone: "blue
         <div className="mt-3"><FlexibilityBadge schedule={request} /></div>
         {request.notes && <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-500">{request.notes}</p>}
       </div>
-      <div className="mt-5 border-t border-slate-100 pt-4 text-right"><Link href={`/requests/${request.id}`} className="focus-ring inline-flex rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white hover:bg-slate-800">Open request</Link></div>
+      <div className="mt-5 border-t border-slate-100 pt-4 text-right">
+        <div className="flex items-center justify-end gap-2">
+          <Link href={`/requests/${request.id}`} className="focus-ring inline-flex rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white hover:bg-slate-800">Open request</Link>
+          {isOwner && (
+            <>
+              <Link href={`/requests/${request.id}/edit`} className="focus-ring inline-flex rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50">Edit</Link>
+              <form action={deleteTransportRequest} method="post" className="m-0">
+                <input type="hidden" name="id" value={request.id} />
+                <button type="submit" className="focus-ring inline-flex rounded-xl border border-red-200 bg-white px-3 py-2 text-sm font-semibold text-red-600 hover:bg-red-50">Delete</button>
+              </form>
+            </>
+          )}
+        </div>
+      </div>
     </article>
   );
 }
 
-function RequestColumn({ title, description, tone, requests }: { title: string; description: string; tone: "blue" | "orange"; requests: TransportRequest[] }) {
+function RequestColumn({ title, description, tone, requests, currentUserId }: { title: string; description: string; tone: "blue" | "orange"; requests: TransportRequest[]; currentUserId?: string }) {
   return (
     <div className="rounded-3xl border border-slate-200 bg-white/60 p-4 sm:p-5">
       <div className="mb-4 flex items-center justify-between gap-3">
         <div><h3 className="text-lg font-bold text-slate-950">{title}</h3><p className="mt-0.5 text-sm text-slate-500">{description}</p></div>
         <span className={`rounded-full px-3 py-1 text-xs font-bold ${tone === "blue" ? "bg-blue-50 text-blue-700" : "bg-orange-50 text-orange-700"}`}>{requests.length}</span>
       </div>
-      {requests.length ? <div className="space-y-3">{requests.map((request) => <RequestCard key={request.id} request={request} tone={tone} />)}</div> : <div className="rounded-2xl border border-dashed border-slate-200 bg-white px-5 py-9 text-center"><p className="font-semibold text-slate-700">No requests yet</p><p className="mt-1 text-sm text-slate-500">Be the first traveler to post one.</p></div>}
+      {requests.length ? <div className="space-y-3">{requests.map((request) => <RequestCard key={request.id} request={request} tone={tone} currentUserId={currentUserId} />)}</div> : <div className="rounded-2xl border border-dashed border-slate-200 bg-white px-5 py-9 text-center"><p className="font-semibold text-slate-700">No requests yet</p><p className="mt-1 text-sm text-slate-500">Be the first traveler to post one.</p></div>}
     </div>
   );
 }
 
-export function TransportRequestBrowser({ requests }: { requests: TransportRequest[] }) {
+export function TransportRequestBrowser({ requests, currentUserId }: { requests: TransportRequest[]; currentUserId?: string }) {
   return (
     <section aria-labelledby="transport-requests-heading" className="mt-20 border-t-4 border-slate-200 pt-12">
       <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -56,8 +71,8 @@ export function TransportRequestBrowser({ requests }: { requests: TransportReque
         <Link href="/requests/new" className="focus-ring inline-flex min-h-11 items-center justify-center rounded-xl bg-slate-950 px-5 text-sm font-bold text-white hover:bg-slate-800">Post a request</Link>
       </div>
       <div className="grid items-start gap-5 lg:grid-cols-2">
-        <RequestColumn title="To Berlin" description="Travelers heading toward Berlin" tone="blue" requests={requests.filter((request) => request.direction === "to-berlin")} />
-        <RequestColumn title="From Berlin" description="Travelers leaving Berlin" tone="orange" requests={requests.filter((request) => request.direction === "from-berlin")} />
+        <RequestColumn title="To Berlin" description="Travelers heading toward Berlin" tone="blue" requests={requests.filter((request) => request.direction === "to-berlin")} currentUserId={currentUserId} />
+        <RequestColumn title="From Berlin" description="Travelers leaving Berlin" tone="orange" requests={requests.filter((request) => request.direction === "from-berlin")} currentUserId={currentUserId} />
       </div>
     </section>
   );

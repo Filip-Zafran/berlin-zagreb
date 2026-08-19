@@ -3,12 +3,16 @@ import { TripBrowser } from "@/components/trip-browser";
 import { TransportRequestBrowser } from "@/components/transport-request-browser";
 import { getUpcomingTrips } from "@/lib/trips";
 import { getUpcomingTransportRequests } from "@/lib/transport-requests";
+import { createClient } from "@/lib/supabase/server";
 import Image from "next/image";
 import brandLogo from "@/images/zagreb berlin logo with text.png";
 import { matchDistance } from "@/lib/travel-flexibility";
 
 export default async function Home() {
   const [trips, requests] = await Promise.all([getUpcomingTrips(), getUpcomingTransportRequests()]);
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const currentUserId = user?.id;
   const closestRequest = (trip: (typeof trips)[number]) => {
     const direction = trip.direction === "berlin-zagreb" ? "from-berlin" : "to-berlin";
     const distances = requests.filter((request) => request.direction === direction).map((request) => matchDistance(trip, request)).filter((distance): distance is number => distance !== null);
@@ -37,8 +41,8 @@ export default async function Home() {
           </div>
         </section>
 
-        <TripBrowser trips={rankedTrips} />
-        <TransportRequestBrowser requests={rankedRequests} />
+        <TripBrowser trips={rankedTrips} currentUserId={currentUserId} />
+        <TransportRequestBrowser requests={rankedRequests} currentUserId={currentUserId} />
       </main>
     </div>
   );

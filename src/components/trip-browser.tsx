@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { RouteColumn } from "@/components/route-column";
 import type { Trip } from "@/data/trips";
 
-export function TripBrowser({ trips }: { trips: Trip[] }) {
+export function TripBrowser({ trips, currentUserId }: { trips: Trip[]; currentUserId?: string }) {
   const [selectedDate, setSelectedDate] = useState("");
   const today = new Date();
   const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
@@ -45,8 +45,8 @@ export function TripBrowser({ trips }: { trips: Trip[] }) {
       </div>
 
       <section aria-label="Upcoming trips" className="grid items-start gap-5 lg:grid-cols-2">
-        <RouteColumn direction="Berlin → Zagreb" description="Southbound rides" tone="orange" trips={filteredTrips.filter((trip) => trip.direction === "berlin-zagreb")} />
-        <RouteColumn direction="Zagreb → Berlin" description="Northbound rides" tone="blue" trips={filteredTrips.filter((trip) => trip.direction === "zagreb-berlin")} />
+        <RouteColumn direction="Berlin → Zagreb" description="Southbound rides" tone="orange" trips={filteredTrips.filter((trip) => trip.direction === "berlin-zagreb")} currentUserId={currentUserId} />
+        <RouteColumn direction="Zagreb → Berlin" description="Northbound rides" tone="blue" trips={filteredTrips.filter((trip) => trip.direction === "zagreb-berlin")} currentUserId={currentUserId} />
       </section>
     </>
   );

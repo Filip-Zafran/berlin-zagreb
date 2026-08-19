@@ -6,6 +6,7 @@ type RouteColumnProps = {
   description: string;
   tone: "blue" | "orange";
   trips: Trip[];
+  currentUserId?: string;
 };
 
 const styles = {
@@ -23,7 +24,7 @@ const styles = {
   },
 };
 
-export function RouteColumn({ direction, description, tone, trips }: RouteColumnProps) {
+export function RouteColumn({ direction, description, tone, trips, currentUserId }: RouteColumnProps) {
   const theme = styles[tone];
 
   return (
@@ -40,7 +41,7 @@ export function RouteColumn({ direction, description, tone, trips }: RouteColumn
       </header>
 
       <div className="space-y-3 p-4 sm:p-5">
-        {trips.length ? trips.map((trip) => <TripCard key={trip.id} trip={trip} tone={tone} />) : (
+        {trips.length ? trips.map((trip) => <TripCard key={trip.id} trip={trip} tone={tone} currentUserId={currentUserId} />) : (
         <div className="relative overflow-hidden rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-5 py-10 text-center">
           <div className={`absolute inset-x-0 top-0 h-px bg-gradient-to-r ${theme.line} via-transparent to-transparent`} />
           <div className="mx-auto grid size-11 place-items-center rounded-2xl bg-white text-slate-400 shadow-sm ring-1 ring-slate-200">

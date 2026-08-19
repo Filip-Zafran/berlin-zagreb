@@ -14,10 +14,12 @@ export type TransportRequest = {
   dropoff: string;
   notes: string;
   passenger: { name: string; initials: string; avatarUrl?: string };
+  passengerId?: string;
 };
 
 type DatabaseRequest = {
   id: string;
+  passenger_id: string;
   direction: TransportRequest["direction"];
   travel_date: string;
   preferred_time: string;
@@ -36,7 +38,7 @@ export async function getUpcomingTransportRequests(): Promise<TransportRequest[]
   const today = new Date().toISOString().slice(0, 10);
   const { data } = await supabase
     .from("transport_requests")
-    .select("id, direction, travel_date, preferred_time, flexibility_type, date_flexibility, time_flexibility, pickup, dropoff, notes, profiles(first_name, avatar_path)")
+    .select("id, passenger_id, direction, travel_date, preferred_time, flexibility_type, date_flexibility, time_flexibility, pickup, dropoff, notes, profiles(first_name, avatar_path)")
     .gte("travel_date", today)
     .order("travel_date");
 
@@ -45,6 +47,7 @@ export async function getUpcomingTransportRequests(): Promise<TransportRequest[]
     const path = row.profiles?.avatar_path;
     return {
       id: row.id,
+      passengerId: (row as unknown as DatabaseRequest).passenger_id,
       direction: row.direction,
       travelDate: row.travel_date,
       preferredTime: row.preferred_time.slice(0, 5),
